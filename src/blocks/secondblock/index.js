@@ -1,7 +1,18 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
-import { RichText, BlockControls, AlignmentToolbar } from "@wordpress/editor";
-import { Toolbar, DropdownMenu } from "@wordpress/components";
+import {
+  RichText,
+  BlockControls,
+  AlignmentToolbar,
+  InspectorControls,
+  PanelColorSettings,
+} from "@wordpress/editor";
+import {
+  ColorPicker,
+  PanelBody,
+  ToggleControl,
+  ColorPalette,
+} from "@wordpress/components";
 
 registerBlockType("dh-gutenberg/secondblock", {
   title: __("Second Block", "dh-gutenberg"),
@@ -33,13 +44,56 @@ registerBlockType("dh-gutenberg/secondblock", {
     alignment: {
       type: "string",
     },
+    switches: {
+      type: "boolean",
+    },
+    backgroundColor: {
+      type: "string",
+    },
+    textColor: {
+      type: "string",
+    },
   },
   edit: function ({ className, setAttributes, attributes }) {
-    const { content, alignment } = attributes;
+    const {
+      content,
+      alignment,
+      switches,
+      backgroundColor,
+      textColor: color,
+    } = attributes;
     const handleOnChange = (value) => setAttributes({ content: value });
     const handleAlignment = (alignment) => setAttributes({ alignment });
+    const handleSwitch = (switches) => setAttributes({ switches });
+    const handleBgColor = (backgroundColor) =>
+      setAttributes({ backgroundColor });
+    const handleTextColor = (textColor) => setAttributes({ textColor });
     return (
       <>
+        <InspectorControls>
+          <PanelBody title={__("Panel", "dh-gutenberg")}>
+            <ToggleControl
+              label={__("Show Icon", "dh-gutenberg")}
+              checked={switches}
+              onChange={handleSwitch}
+            />
+          </PanelBody>
+          <PanelColorSettings
+            title={__("Color", "dh-gutenberg")}
+            colorSettings={[
+              {
+                value: color,
+                onChange: handleTextColor,
+                label: __("Text Color", "dh-gutenberg"),
+              },
+              {
+                value: backgroundColor,
+                onChange: handleBgColor,
+                label: __("Background Color", "dh-gutenberg"),
+              },
+            ]}
+          />
+        </InspectorControls>
         <BlockControls>
           <AlignmentToolbar value={alignment} onChange={handleAlignment} />
         </BlockControls>
@@ -49,18 +103,23 @@ registerBlockType("dh-gutenberg/secondblock", {
           onChange={handleOnChange}
           value={content}
           formattingControls={["bold"]}
-          style={{ textAlign: alignment }}
+          style={{ textAlign: alignment, backgroundColor, color }}
         />
       </>
     );
   },
   save: function ({ attributes }) {
-    const { content, alignment } = attributes;
+    const {
+      content,
+      alignment,
+      backgroundColor,
+      textColor: color,
+    } = attributes;
     return (
       <RichText.Content
         tagName="p"
         value={content}
-        style={{ textAlign: alignment }}
+        style={{ textAlign: alignment, backgroundColor, color }}
       />
     );
   },
