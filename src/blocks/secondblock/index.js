@@ -1,6 +1,6 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
-import { RichText, BlockControls } from "@wordpress/editor";
+import { RichText, BlockControls, AlignmentToolbar } from "@wordpress/editor";
 import { Toolbar, DropdownMenu } from "@wordpress/components";
 
 registerBlockType("dh-gutenberg/secondblock", {
@@ -30,79 +30,18 @@ registerBlockType("dh-gutenberg/secondblock", {
       source: "html",
       selector: "p",
     },
+    alignment: {
+      type: "string",
+    },
   },
   edit: function ({ className, setAttributes, attributes }) {
-    const { content } = attributes;
+    const { content, alignment } = attributes;
     const handleOnChange = (value) => setAttributes({ content: value });
+    const handleAlignment = (alignment) => setAttributes({ alignment });
     return (
       <>
-        <BlockControls
-          controls={[
-            [
-              {
-                icon: "wordpress",
-                title: __("test", "dh-gutenberg"),
-                onClick: () => alert(true),
-                isActive: true,
-              },
-            ],
-            [
-              {
-                icon: "twitter",
-                title: __("test", "dh-gutenberg"),
-                onClick: () => alert(true),
-                isActive: false,
-              },
-            ],
-          ]}
-        >
-          <Toolbar
-            isCollapsed
-            controls={[
-              [
-                {
-                  icon: "wordpress",
-                  title: __("test", "dh-gutenberg"),
-                  onClick: () => alert(true),
-                  isActive: true,
-                },
-              ],
-              [
-                {
-                  icon: "twitter",
-                  title: __("test", "dh-gutenberg"),
-                  onClick: () => alert(true),
-                  isActive: false,
-                },
-              ],
-            ]}
-          />
-          {content && content.length > 0 && (
-            <Toolbar>
-              <DropdownMenu
-                icon="editor-table"
-                label={__("Dropdown", "dh-gutenberg")}
-                controls={[
-                  [
-                    {
-                      icon: "wordpress",
-                      title: __("test", "dh-gutenberg"),
-                      onClick: () => alert(true),
-                      isActive: true,
-                    },
-                  ],
-                  [
-                    {
-                      icon: "twitter",
-                      title: __("test", "dh-gutenberg"),
-                      onClick: () => alert(true),
-                      isActive: false,
-                    },
-                  ],
-                ]}
-              />
-            </Toolbar>
-          )}
+        <BlockControls>
+          <AlignmentToolbar value={alignment} onChange={handleAlignment} />
         </BlockControls>
         <RichText
           tagName="p"
@@ -110,12 +49,19 @@ registerBlockType("dh-gutenberg/secondblock", {
           onChange={handleOnChange}
           value={content}
           formattingControls={["bold"]}
+          style={{ textAlign: alignment }}
         />
       </>
     );
   },
   save: function ({ attributes }) {
-    const { content } = attributes;
-    return <RichText.Content tagName="p" value={content} />;
+    const { content, alignment } = attributes;
+    return (
+      <RichText.Content
+        tagName="p"
+        value={content}
+        style={{ textAlign: alignment }}
+      />
+    );
   },
 });
