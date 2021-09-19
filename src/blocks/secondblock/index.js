@@ -1,6 +1,7 @@
 import { registerBlockType } from "@wordpress/blocks";
 import { __ } from "@wordpress/i18n";
-import { RichText } from "@wordpress/editor";
+import { RichText, BlockControls } from "@wordpress/editor";
+import { Toolbar, DropdownMenu } from "@wordpress/components";
 
 registerBlockType("dh-gutenberg/secondblock", {
   title: __("Second Block", "dh-gutenberg"),
@@ -26,19 +27,91 @@ registerBlockType("dh-gutenberg/secondblock", {
   attributes: {
     content: {
       type: "string",
+      source: "html",
+      selector: "p",
     },
   },
   edit: function ({ className, setAttributes, attributes }) {
     const { content } = attributes;
     const handleOnChange = (value) => setAttributes({ content: value });
     return (
-      <RichText
-        tagName="p"
-        className={className}
-        onChange={handleOnChange}
-        value={content}
-        formattingControls={["bold"]}
-      />
+      <>
+        <BlockControls
+          controls={[
+            [
+              {
+                icon: "wordpress",
+                title: __("test", "dh-gutenberg"),
+                onClick: () => alert(true),
+                isActive: true,
+              },
+            ],
+            [
+              {
+                icon: "twitter",
+                title: __("test", "dh-gutenberg"),
+                onClick: () => alert(true),
+                isActive: false,
+              },
+            ],
+          ]}
+        >
+          <Toolbar
+            isCollapsed
+            controls={[
+              [
+                {
+                  icon: "wordpress",
+                  title: __("test", "dh-gutenberg"),
+                  onClick: () => alert(true),
+                  isActive: true,
+                },
+              ],
+              [
+                {
+                  icon: "twitter",
+                  title: __("test", "dh-gutenberg"),
+                  onClick: () => alert(true),
+                  isActive: false,
+                },
+              ],
+            ]}
+          />
+          {content && content.length > 0 && (
+            <Toolbar>
+              <DropdownMenu
+                icon="editor-table"
+                label={__("Dropdown", "dh-gutenberg")}
+                controls={[
+                  [
+                    {
+                      icon: "wordpress",
+                      title: __("test", "dh-gutenberg"),
+                      onClick: () => alert(true),
+                      isActive: true,
+                    },
+                  ],
+                  [
+                    {
+                      icon: "twitter",
+                      title: __("test", "dh-gutenberg"),
+                      onClick: () => alert(true),
+                      isActive: false,
+                    },
+                  ],
+                ]}
+              />
+            </Toolbar>
+          )}
+        </BlockControls>
+        <RichText
+          tagName="p"
+          className={className}
+          onChange={handleOnChange}
+          value={content}
+          formattingControls={["bold"]}
+        />
+      </>
     );
   },
   save: function ({ attributes }) {
