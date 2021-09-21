@@ -1,24 +1,13 @@
-import "./styles.editor.scss";
 import { registerBlockType } from "@wordpress/blocks";
+import { RichText } from "@wordpress/editor";
 import { __ } from "@wordpress/i18n";
-import {
-  RichText,
-  BlockControls,
-  AlignmentToolbar,
-  InspectorControls,
-  PanelColorSettings,
-} from "@wordpress/editor";
-import {
-  ColorPicker,
-  PanelBody,
-  ToggleControl,
-  ColorPalette,
-} from "@wordpress/components";
+import Edit from './edit';
+import "./styles.editor.scss";
 
 registerBlockType("dh-gutenberg/secondblock", {
   title: __("Second Block", "dh-gutenberg"),
   description: __("Our first gutenberg block plugin", "dh-gutenberg"),
-  category: "layout",
+  category: "dh-gutenberg",
   icon: {
     foreground: "#fff",
     background: "#ddd",
@@ -36,6 +25,23 @@ registerBlockType("dh-gutenberg/secondblock", {
     ),
   },
   keywords: [__("image", "dh-gutenberg"), __("photo", "dh-gutenberg")],
+  
+  styles: [
+    {
+      name: 'rounded',
+      label: __("Rounded", "dh-gutenberg"),
+      isDefault: true
+    },
+    {
+      name: 'Outline',
+      label: __("Outline", "dh-gutenberg")
+    },
+    {
+      name: 'Squared',
+      label: __("Squared", "dh-gutenberg")
+    }
+  ],
+
   attributes: {
     content: {
       type: "string",
@@ -54,61 +60,14 @@ registerBlockType("dh-gutenberg/secondblock", {
     textColor: {
       type: "string",
     },
+    customBackgroundColor: {
+      type: "string",
+    },
+    customTextColor: {
+      type: "string",
+    },
   },
-  edit: function ({ className, setAttributes, attributes }) {
-    const {
-      content,
-      alignment,
-      switches,
-      backgroundColor,
-      textColor: color,
-    } = attributes;
-    const handleOnChange = (value) => setAttributes({ content: value });
-    const handleAlignment = (alignment) => setAttributes({ alignment });
-    const handleSwitch = (switches) => setAttributes({ switches });
-    const handleBgColor = (backgroundColor) =>
-      setAttributes({ backgroundColor });
-    const handleTextColor = (textColor) => setAttributes({ textColor });
-    return (
-      <>
-        <InspectorControls>
-          <PanelBody title={__("Panel", "dh-gutenberg")}>
-            <ToggleControl
-              label={__("Show Icon", "dh-gutenberg")}
-              checked={switches}
-              onChange={handleSwitch}
-            />
-          </PanelBody>
-          <PanelColorSettings
-            title={__("Color", "dh-gutenberg")}
-            colorSettings={[
-              {
-                value: color,
-                onChange: handleTextColor,
-                label: __("Text Color", "dh-gutenberg"),
-              },
-              {
-                value: backgroundColor,
-                onChange: handleBgColor,
-                label: __("Background Color", "dh-gutenberg"),
-              },
-            ]}
-          />
-        </InspectorControls>
-        <BlockControls>
-          <AlignmentToolbar value={alignment} onChange={handleAlignment} />
-        </BlockControls>
-        <RichText
-          tagName="p"
-          className={className}
-          onChange={handleOnChange}
-          value={content}
-          formattingControls={["bold"]}
-          style={{ textAlign: alignment, backgroundColor, color }}
-        />
-      </>
-    );
-  },
+  edit: Edit,
   save: function ({ attributes }) {
     const {
       content,

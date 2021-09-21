@@ -13,6 +13,19 @@
      exit;
  }
 
+ function dh_gutenberg_blocks_categories( $categories, $post ){
+     return array_merge(
+        $categories,
+        array(
+            array(
+                'slug'  => 'dh-gutenberg',
+                'title' => __('Dh-Gutenberg', 'dh-gutenberg'),
+                'icon'  => 'wordpress',
+            )
+        )
+     );
+ }
+ add_filter('block_categories', 'dh_gutenberg_blocks_categories', 10, 2);
 
  function dhguten_blocks_register_block_type($block, $options=array()) {
     register_block_type('dh-gutenberg/' . $block,
