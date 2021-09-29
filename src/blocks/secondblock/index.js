@@ -1,6 +1,7 @@
 import { registerBlockType } from "@wordpress/blocks";
-import { RichText } from "@wordpress/editor";
+import { getColorClassName, RichText } from "@wordpress/editor";
 import { __ } from "@wordpress/i18n";
+import classnames from 'classnames';
 import Edit from './edit';
 import "./styles.editor.scss";
 
@@ -66,6 +67,14 @@ registerBlockType("dh-gutenberg/secondblock", {
     customTextColor: {
       type: "string",
     },
+    shadow: {
+      type: "boolean",
+      default: false
+    },
+    shadowOpacity: {
+      type: 'number',
+      default: 0.3
+    }
   },
   edit: Edit,
   save: function ({ attributes }) {
@@ -73,13 +82,33 @@ registerBlockType("dh-gutenberg/secondblock", {
       content,
       alignment,
       backgroundColor,
-      textColor: color,
+      textColor,
+      customBackgroundColor,
+      customTextColor,
+      shadow,
+      shadowOpacity
     } = attributes;
+
+    const backgroundClass = getColorClassName('background-color', backgroundColor);
+    const textClass = getColorClassName('color', textColor);
+
+    const classes = classnames({
+      [backgroundClass]: backgroundClass,
+      [textClass]: textClass,
+      'has-shadow': shadow,
+      [`shadow-opacity-${shadowOpacity * 100}`]: shadowOpacity
+    })
+
     return (
       <RichText.Content
         tagName="p"
+        className={classes}
         value={content}
-        style={{ textAlign: alignment, backgroundColor, color }}
+        style={{
+          textAlign: alignment,
+          backgroundColor: backgroundClass ? undefined : customBackgroundColor,
+          color: textClass ? undefined : customTextColor,
+        }}
       />
     );
   },
