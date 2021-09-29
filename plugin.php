@@ -31,9 +31,9 @@
     register_block_type('dh-gutenberg/' . $block,
          array_merge(array(
             'editor_script' => 'dh-gutenberg-editor-script',
-            'editor_style' => 'dh-gutenberg-editor-style',
-            'script' => 'dh-gutenberg-script',
-            'style' => 'dh-gutenberg-style'
+            'editor_style'  => 'dh-gutenberg-editor-style',
+            'script'        => 'dh-gutenberg-script',
+            'style'         => 'dh-gutenberg-style'
         ), $options));
  }
 
@@ -55,6 +55,7 @@
 
     dhguten_blocks_register_block_type('firstblock');
     dhguten_blocks_register_block_type('secondblock', array());
+    dhguten_blocks_register_block_type('team-member', array());
      
  }
 
